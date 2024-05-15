@@ -1,0 +1,46 @@
+# MediaWiki with MySQL
+version: '3'
+services:
+  mediawiki:
+    image: itsbharatsaini/mediawiki-app:latest
+    restart: always
+    networks:
+      - docker_network
+    ports:
+      - 80:80
+    # volumes:      
+    #   - ./LocalSettings.php:/var/www/html/LocalSettings.php
+# After initial setup, download LocalSettings.php to the same directory as
+# this yaml and uncomment the following line and use compose to restart
+# the mediawiki service
+  database:
+    image: mysql:8.0.29
+    restart: always
+    networks:
+      - docker_network
+    environment:
+      MYSQL_DATABASE: mediawiki_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: mediawiki
+      MYSQL_PASSWORD: mediawiki
+    volumes:
+      - /var/lib/mysql
+
+  # phpmyadmin
+  phpmyadmin:
+    depends_on:
+      - database
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8000:80'
+    environment:
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: root
+      UPLOAD_LIMIT: 64M
+    networks:
+      - docker_network    
+
+networks:
+  docker_network:
+    driver: bridge
