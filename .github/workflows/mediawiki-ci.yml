@@ -2,7 +2,8 @@ name: MediaWiki CI
 
 on:
   push:
-    branches: main
+    branches: 
+      - main
 
   workflow_dispatch:
 
@@ -12,11 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Read version
+        id: read_version
+        run: |
+          VERSION=$(cat VERSION)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
   
       - name: Build Docker Image
         run: |
-          docker build -t itsbharatsaini/mediawiki-app:latest .
+          docker build -t itsbharatsaini/mediawiki-app:${{ env.VERSION }} .
           docker login -u itsbharatsaini -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker push itsbharatsaini/mediawiki-app:latest
+          docker push itsbharatsaini/mediawiki-app:${{ env.VERSION }}
