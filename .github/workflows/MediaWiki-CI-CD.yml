@@ -24,3 +24,13 @@ jobs:
           docker build -t itsbharatsaini/mediawiki-app:${{ env.VERSION }} .
           docker login -u itsbharatsaini -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker push itsbharatsaini/mediawiki-app:${{ env.VERSION }}
+      
+      # - name: Set up K8s
+      #   uses: azure/k8s-set-context@v1
+      #   with:
+      #     method: kubeconfig
+      #     kubeconfig: ${{ secrets.K8S_KUBECONFIG }}
+
+      # - name: Deploy to Kubernetes through Helm
+      #   run: |
+      #     helm upgrade --install mediawiki-app ./mediawiki-chart --set image.tag=${{ env.VERSION }}
