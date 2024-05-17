@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediawiki-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediawiki-db
+  template:
+    metadata:
+      labels:
+        app: mediawiki-db
+    spec:
+      containers:
+      - name: mediawiki-db
+        image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+        env:
+        - name: MYSQL_DATABASE
+          value: mediawikidb
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_USER
+          value: mediawiki
+        - name: MYSQL_PASSWORD
+          value: mediawiki
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mediawiki-db-pvc
+        resources: {}
+      restartPolicy: Always
+      volumes:
+        - name: mediawiki-db-pvc
+          persistentVolumeClaim:
+            claimName: mediawiki-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediawiki-db-svc
+  labels:
+    app: mediawiki-db
+    tier: database
+spec:
+  selector:
+    app: mediawiki-db
+    tier: database
+  type: ClusterIP
+  ports:
+    - port: 3306

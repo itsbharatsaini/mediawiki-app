@@ -7,9 +7,9 @@ services:
     networks:
       - docker_network
     ports:
-      - 80:80
-    # volumes:      
-    #   - ./LocalSettings.php:/var/www/html/LocalSettings.php
+      - 88:80
+    volumes:      
+      - ./LocalSettings.php:/var/www/html/LocalSettings.php
 # After initial setup, download LocalSettings.php to the same directory as
 # this yaml and uncomment the following line and use compose to restart
 # the mediawiki service

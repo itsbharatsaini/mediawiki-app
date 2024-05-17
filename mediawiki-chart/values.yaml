@@ -80,19 +80,25 @@ autoscaling:
 
 # Additional volumes on the output Deployment definition.
 volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+  # - name: mediawiki-web-pvc
+  #   persistentVolumeClaim:
+  #     claimName: mediawiki-web-pvc
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+  # - name: mediawiki-web-pvc
+  #   mountPath: /var/www/html/
+  #   subPath: LocalSettings.php
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+
+mysql:
+  image:
+    repository: mysql
+    tag: latest
+    pullPolicy: IfNotPresent
